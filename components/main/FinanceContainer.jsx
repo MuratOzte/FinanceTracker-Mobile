@@ -1,10 +1,46 @@
 import { View, StyleSheet, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useState, useEffect } from 'react';
+import cheerio from 'cheerio';
+import { StatusBar } from 'expo-status-bar';
+import { Button, ScrollView, TextInput } from 'react-native';
 
 const FinanceContainer = ({ name, price, small, amount, lastPrice }) => {
     const [rate, setRate] = useState(0);
     const [isIncrease, setIsIncrease] = useState(false);
+    const [enteredText, setEnteredText] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [list, setList] = useState([]);
+
+    const url = `https://www.google.com/finance/quote/${enteredText}:IST?hl=tr`;
+
+    const fetchStockData = async () => {
+        try {
+            setIsLoading(true);
+            const response = await fetch(url, { cache: 'no-store' });
+            const html = await response.text();
+            const $ = cheerio.load(html);
+            const name = $('.zzDege').text();
+            const price = $('.YMlKec.fxKbKc').text().replace('₺', '');
+            const small = $('.BRnNhc').text().split(' ')[1].split('Sayfa')[1];
+            const lastPrice = $('.P6K39c').text().split('₺')[1];
+            if (
+                !list.some(
+                    (item) =>
+                        item.name === name &&
+                        item.price === price &&
+                        item.small === small &&
+                        item.lastPrice === lastPrice
+                )
+            ) {
+                setList([...list, { name, price, small, lastPrice }]);
+            }
+            setIsLoading(false);
+        } catch (error) {
+            console.error('Fetch Hatası:', error);
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
         if (lastPrice > price) {
@@ -43,7 +79,9 @@ const FinanceContainer = ({ name, price, small, amount, lastPrice }) => {
                         size={20}
                         color={isIncrease ? 'green' : 'red'}
                     />
-                    <Text>{rate}</Text>
+                    <Text style={{ color: isIncrease ? 'green' : 'red' }}>
+                        {rate}
+                    </Text>
                 </View>
             </View>
         )
@@ -69,9 +107,9 @@ const styles = StyleSheet.create({
     },
     bottomOfContainer: {
         flexDirection: 'row',
-        position:'absolute',
+        position: 'absolute',
         bottom: '20%',
-        left:'40%'
+        left: '40%',
     },
     small: {
         backgroundColor: 'black',
