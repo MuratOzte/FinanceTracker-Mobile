@@ -19,7 +19,7 @@ const FinanceContainer = ({ name, price, small, amount, lastPrice }) => {
             const calculatedRate = (
                 ((parseFloat(price.replace(',', '.')) -
                     parseFloat(lastPrice.replace(',', '.'))) /
-                    parseFloat(lastPrice.replace(',', '.')))  *
+                    parseFloat(lastPrice.replace(',', '.'))) *
                 100
             ).toFixed(2);
 
@@ -34,26 +34,16 @@ const FinanceContainer = ({ name, price, small, amount, lastPrice }) => {
     return (
         name && (
             <View style={styles.container}>
-                <View style={styles.topOfContainer}>
-                    <Text style={styles.small}>{small}</Text>
-                    <Text style={styles.nameText}>{name}</Text>
-                </View>
+                <Text style={styles.small}>{small}</Text>
+                <Text style={styles.nameText}>{name}</Text>
+                <Text style={styles.price}>{price + '₺'}</Text>
                 <View style={styles.bottomOfContainer}>
-                    <Text style={styles.amount}>{amount + ' Adet'}</Text>
-                    <Text style={styles.amount}>{price}</Text>
                     <Icon
                         name={isIncrease ? 'arrowup' : 'arrowdown'}
                         size={20}
                         color={isIncrease ? 'green' : 'red'}
                     />
-                    <Text
-                        style={{
-                            color: isIncrease ? 'green' : 'red',
-                            fontSize: 16,
-                        }}
-                    >
-                        {rate}
-                    </Text>
+                    <Text>{rate}</Text>
                 </View>
             </View>
         )
@@ -67,6 +57,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+        height: 60,
         flexDirection: 'column',
         width: '100%',
         borderRadius: 30,
@@ -74,30 +65,41 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     topOfContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        width: '100%',
-        marginLeft: 30,
+        position: 'absolute',
     },
     bottomOfContainer: {
         flexDirection: 'row',
+        position:'absolute',
+        bottom: '20%',
+        left:'40%'
     },
     small: {
         backgroundColor: 'black',
         padding: 8,
         color: 'white',
         borderRadius: 20,
-        transform: [{ translateY: 12 }],
+        position: 'absolute',
+        left: '5%',
     },
     nameText: {
         fontSize: 15,
         fontWeight: 'bold',
         marginLeft: 25,
         width: '70%',
+        position: 'absolute',
+        left: '15%',
+        top: '20%',
     },
     amount: {
         fontSize: 15,
         marginLeft: 20,
+    },
+    price: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        position: 'absolute',
+        left: '22%',
+        bottom: '20%',
     },
 });
 
