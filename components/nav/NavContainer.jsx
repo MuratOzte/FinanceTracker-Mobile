@@ -17,11 +17,10 @@ const NavContainer = () => {
 
 const styles = StyleSheet.create({
     container: {
-        position: 'absolute',
+        position: 'relative',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        bottom: 0,
         height: 60,
         width: '100%',
         backgroundColor: 'lightblue',
