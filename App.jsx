@@ -1,45 +1,12 @@
-import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { Text, View, StyleSheet, TextInput, Button } from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import NavContainer from './components/nav/NavContainer';
-import cheerio from 'cheerio';
+import MyFinance from './components/main/MyFinance';
 
 export default function App() {
-    const [enteredText, setEnteredText] = useState('');
-    const [text, setText] = useState('');
-
-    const fetchStockData = async () => {
-        const url = `https://www.google.com/finance/quote/${enteredText}:IST?hl=tr`;
-
-        try {
-            setText('Yükleniyor...')
-            const response = await fetch(url);
-            const html = await response.text();
-            const $ = cheerio.load(html);
-            const name = $('.zzDege').text();
-            const price = $('.YMlKec.fxKbKc').text();
-            setText(price + ' ' + name);
-        } catch (error) {
-            console.error('Fetch Hatası:', error);
-        }
-    };
-
-    const handleInputChange = (newText) => {
-        setEnteredText(newText);
-    };
-
     return (
         <View style={styles.container}>
-            <View style={styles.inputContainer}>
-                <TextInput
-                    value={enteredText}
-                    style={styles.input}
-                    onChangeText={handleInputChange}
-                />
-                <Button title="Getir" onPress={fetchStockData} />
-            </View>
-            <Text>{text}</Text>
-            <StatusBar style="auto" />
+            <MyFinance />
             <NavContainer />
         </View>
     );
@@ -48,6 +15,7 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        marginTop: 50,
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
