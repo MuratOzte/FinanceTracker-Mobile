@@ -21,25 +21,23 @@ const MyFinance = () => {
     const fetchStockData = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(url,{cache: "no-store"});
+            const response = await fetch(url, { cache: 'no-store' });
             const html = await response.text();
             const $ = cheerio.load(html);
-            const title = $('title').text();
             const name = $('.zzDege').text();
-            const price = $('.YMlKec.fxKbKc').text();
+            const price = $('.YMlKec.fxKbKc').text().replace('₺', '');
             const small = $('.BRnNhc').text().split(' ')[1].split('Sayfa')[1];
-            const rate = $('span[jsname="Fe7oBc"]').attr('aria-label');
-            console.log(rate);
+            const lastPrice = $('.P6K39c').text().split('₺')[1];
             if (
                 !list.some(
                     (item) =>
                         item.name === name &&
                         item.price === price &&
                         item.small === small &&
-                        item.rate === rate
+                        item.lastPrice === lastPrice
                 )
             ) {
-                setList([...list, { name, price, small, rate }]);
+                setList([...list, { name, price, small, lastPrice }]);
             }
             setIsLoading(false);
         } catch (error) {
@@ -70,7 +68,7 @@ const MyFinance = () => {
                         name={item.name}
                         small={item.small}
                         price={item.price}
-                        rate={item.rate}
+                        lastPrice={item.lastPrice}
                         amount={20}
                     />
                 ))}
@@ -86,7 +84,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginTop: 20,
-        height:'80%',
+        height: '80%',
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',

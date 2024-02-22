@@ -1,8 +1,36 @@
 import { View, StyleSheet, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
+import { useState, useEffect } from 'react';
 
-const FinanceContainer = ({ name, price, small, amount, rate }) => {
-    const isIncrease = rate.toLowerCase().includes('arttı');
+const FinanceContainer = ({ name, price, small, amount, lastPrice }) => {
+    const [rate, setRate] = useState(0);
+    const [isIncrease, setIsIncrease] = useState(false);
+
+    useEffect(() => {
+        if (lastPrice > price) {
+            const calculatedRate =
+                (parseFloat(lastPrice) - parseFloat(price) * 100) /
+                parseFloat(lastPrice);
+            console.log('calculatedRate', calculatedRate);
+            setRate(calculatedRate);
+            setIsIncrease(false);
+        } else {
+            console.log('lastPrice', lastPrice, 'price', price);
+            const calculatedRate = (
+                ((parseFloat(price.replace(',', '.')) -
+                    parseFloat(lastPrice.replace(',', '.'))) /
+                    parseFloat(lastPrice.replace(',', '.')))  *
+                100
+            ).toFixed(2);
+
+            console.log('calculatedRate', calculatedRate);
+            setRate(calculatedRate + '%');
+            setIsIncrease(true);
+        }
+    }, [lastPrice, price]);
+
+    console.log(rate);
+
     return (
         name && (
             <View style={styles.container}>
@@ -16,8 +44,16 @@ const FinanceContainer = ({ name, price, small, amount, rate }) => {
                     <Icon
                         name={isIncrease ? 'arrowup' : 'arrowdown'}
                         size={20}
+                        color={isIncrease ? 'green' : 'red'}
                     />
-                    <Text>{rate.split(' ')[0]}</Text>
+                    <Text
+                        style={{
+                            color: isIncrease ? 'green' : 'red',
+                            fontSize: 16,
+                        }}
+                    >
+                        {rate}
+                    </Text>
                 </View>
             </View>
         )
@@ -51,20 +87,17 @@ const styles = StyleSheet.create({
         padding: 8,
         color: 'white',
         borderRadius: 20,
-        transform: [{ translateY: 12}],
+        transform: [{ translateY: 12 }],
     },
     nameText: {
         fontSize: 15,
         fontWeight: 'bold',
         marginLeft: 25,
-        width: '70%'
+        width: '70%',
     },
     amount: {
         fontSize: 15,
         marginLeft: 20,
-    },
-    arrowDown: {
-        transform: [{ rotate: '180deg' }],
     },
 });
 
