@@ -21,12 +21,30 @@ const MyFinance = () => {
     const storeData = async () => {
         try {
             await AsyncStorage.setItem('financeList', JSON.stringify(list));
+            console.log('Data stored successfully');
         } catch (error) {
             console.error('Store Data Hatası:', error);
         }
     };
 
     const url = `https://www.google.com/finance/quote/${enteredText}:IST?hl=tr`;
+
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const jsonValue = await AsyncStorage.getItem('financeList');
+                console.log('cache', jsonValue);
+                setList(jsonValue != null ? JSON.parse(jsonValue) : null);
+            } catch (e) {
+                console.error('Error reading value:', e);
+            }
+        };
+        getData();
+    }, []);
+
+    useEffect(() => {
+        if(list.length > 0) storeData();
+    }, [list]); 
 
     const fetchStockData = async () => {
         try {
@@ -47,10 +65,13 @@ const MyFinance = () => {
                         item.lastPrice === lastPrice
                 )
             ) {
-                setList([...list, { name, price, small, lastPrice }]);
+                setList((prevList) => [
+                    ...prevList,
+                    { name, price, small, lastPrice },
+                ]);
+                storeData();
             }
             setIsLoading(false);
-            storeData();
         } catch (error) {
             console.error('Fetch Hatası:', error);
             setIsLoading(false);
@@ -60,9 +81,7 @@ const MyFinance = () => {
     const getData = async () => {
         try {
             const jsonValue = await AsyncStorage.getItem('financeList');
-            return jsonValue != null
-                ? console.log(JSON.parse(jsonValue))
-                : null;
+            return jsonValue != null ? JSON.parse(jsonValue) : null;
         } catch (e) {
             // error reading value
         }
