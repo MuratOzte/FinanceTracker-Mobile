@@ -74,7 +74,9 @@ const FinanceContainer = ({ name, price, small, amount, lastPrice }) => {
         name && (
             <View style={styles.container}>
                 <Text style={styles.small}>{small}</Text>
-                <Text style={styles.nameText}>{name}</Text>
+                <Text style={styles.nameText}>
+                    {name.length > 32 ? `${name.slice(0, 32)}...` : name}
+                </Text>
                 <Text style={styles.price}>{price + '₺'}</Text>
                 <View style={styles.bottomOfContainer}>
                     <Icon
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
         color: 'white',
         borderRadius: 20,
         position: 'absolute',
-        left: '5%',
+        left: '4%',
     },
     nameText: {
         fontSize: 15,
