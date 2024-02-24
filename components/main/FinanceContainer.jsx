@@ -44,9 +44,12 @@ const FinanceContainer = ({ name, price, small, amount, lastPrice }) => {
 
     useEffect(() => {
         if (lastPrice > price) {
-            const calculatedRate =
-                (parseFloat(lastPrice) - parseFloat(price) * 100) /
-                parseFloat(lastPrice);
+            const calculatedRate = (
+                ((parseFloat(lastPrice.replace(',', '.')) -
+                    parseFloat(price.replace(',', '.'))) /
+                    parseFloat(lastPrice.replace(',', '.'))) *
+                100
+            ).toFixed(2);
             console.log('calculatedRate', calculatedRate);
             setRate(calculatedRate);
             setIsIncrease(false);
