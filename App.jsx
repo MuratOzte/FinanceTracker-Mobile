@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import NavContainer from './components/nav/NavContainer';
 import MyFinance from './components/main/MyFinance';
 
 export default function App() {
+    const [selectedPage, setSelectedPage] = useState('Home');
+    console.log(`Icon clicked: ${selectedPage}`);
+
     return (
         <View style={styles.container}>
             <MyFinance />
-            <NavContainer />
+            <NavContainer setSelectedPage={setSelectedPage} />
         </View>
     );
 }

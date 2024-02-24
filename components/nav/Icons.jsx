@@ -1,9 +1,9 @@
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const Icons = ({ title }) => {
+const Icons = ({ title, setSelectedPage }) => {
     const handleIconClick = (iconName) => {
-        console.log(`Icon clicked: ${iconName}`);
+        setSelectedPage(iconName);
     };
 
     return (

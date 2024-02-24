@@ -3,14 +3,14 @@ import { StyleSheet, View } from 'react-native';
 import Icons from './Icons';
 import HorizontalDivider from '../common/horizontalDivider';
 
-const NavContainer = () => {
+const NavContainer = ({ setSelectedPage }) => {
     return (
         <View style={styles.container}>
-            <Icons title="finance" />
+            <Icons title="finance" setSelectedPage={setSelectedPage} />
             <HorizontalDivider />
-            <Icons title="home" />
+            <Icons title="home" setSelectedPage={setSelectedPage} />
             <HorizontalDivider />
-            <Icons title="account" />
+            <Icons title="account" setSelectedPage={setSelectedPage} />
         </View>
     );
 };
