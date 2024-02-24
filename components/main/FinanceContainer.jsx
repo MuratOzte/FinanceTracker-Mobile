@@ -1,18 +1,16 @@
-import { View, StyleSheet, Text } from 'react-native';
-import Icon from 'react-native-vector-icons/AntDesign';
-import { useState, useEffect } from 'react';
 import cheerio from 'cheerio';
-import { StatusBar } from 'expo-status-bar';
-import { Button, ScrollView, TextInput } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import Icon from 'react-native-vector-icons/AntDesign';
 
-const FinanceContainer = ({ name, price, small, amount, lastPrice }) => {
+const FinanceContainer = ({ small }) => {
     const [rate, setRate] = useState(0);
     const [isIncrease, setIsIncrease] = useState(false);
     const [enteredText, setEnteredText] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [list, setList] = useState([]);
+    const [data, setData] = useState([]);
 
-    const url = `https://www.google.com/finance/quote/${enteredText}:IST?hl=tr`;
+    const url = `https://www.google.com/finance/quote/${small}:IST?hl=tr`;
 
     const fetchStockData = async () => {
         try {
@@ -24,60 +22,85 @@ const FinanceContainer = ({ name, price, small, amount, lastPrice }) => {
             const price = $('.YMlKec.fxKbKc').text().replace('₺', '');
             const small = $('.BRnNhc').text().split(' ')[1].split('Sayfa')[1];
             const lastPrice = $('.P6K39c').text().split('₺')[1];
-            if (
-                !list.some(
-                    (item) =>
-                        item.name === name &&
-                        item.price === price &&
-                        item.small === small &&
-                        item.lastPrice === lastPrice
-                )
-            ) {
-                setList([...list, { name, price, small, lastPrice }]);
-            }
+            setData([...data, { name, price, small, lastPrice }]);
             setIsLoading(false);
         } catch (error) {
-            console.error('Fetch Hatası:', error);
+            console.error('Fetch Hat:', error);
             setIsLoading(false);
         }
     };
+    useEffect(() => {
+        fetchStockData();
+    }, []);
 
     useEffect(() => {
-        if (lastPrice > price) {
-            const calculatedRate = (
-                ((parseFloat(lastPrice.replace(',', '.')) -
-                    parseFloat(price.replace(',', '.'))) /
-                    parseFloat(lastPrice.replace(',', '.'))) *
-                100
-            ).toFixed(2);
-            console.log('calculatedRate', calculatedRate);
-            setRate(calculatedRate);
-            setIsIncrease(false);
-        } else {
-            console.log('lastPrice', lastPrice, 'price', price);
-            const calculatedRate = (
-                ((parseFloat(price.replace(',', '.')) -
-                    parseFloat(lastPrice.replace(',', '.'))) /
-                    parseFloat(lastPrice.replace(',', '.'))) *
-                100
-            ).toFixed(2);
+        if (data[0] !== undefined) {
+            const info = data[0];
+            if (info.lastPrice > info.price) {
+                const calculatedRate = (
+                    ((parseFloat(info.lastPrice.replace(',', '.')) -
+                        parseFloat(info.price.replace(',', '.'))) /
+                        parseFloat(info.lastPrice.replace(',', '.'))) *
+                    100
+                ).toFixed(2);
+                console.log('calculatedRate', calculatedRate);
+                setRate(calculatedRate);
+                setIsIncrease(false);
+            } else {
+                const calculatedRate = (
+                    ((parseFloat(info.price.replace(',', '.')) -
+                        parseFloat(info.lastPrice.replace(',', '.'))) /
+                        parseFloat(info.lastPrice.replace(',', '.'))) *
+                    100
+                ).toFixed(2);
 
-            console.log('calculatedRate', calculatedRate);
-            setRate(calculatedRate + '%');
-            setIsIncrease(true);
+                console.log('calculatedRate', calculatedRate);
+                setRate(calculatedRate + '%');
+                setIsIncrease(true);
+            }
         }
-    }, [lastPrice, price]);
+    }, [data]);
+
+    useEffect(() => {
+        if (data[0] !== undefined) {
+            const info = data[0];
+            if (info.lastPrice > info.price) {
+                const calculatedRate = (
+                    ((parseFloat(info.lastPrice.replace(',', '.')) -
+                        parseFloat(info.price.replace(',', '.'))) /
+                        parseFloat(info.lastPrice.replace(',', '.'))) *
+                    100
+                ).toFixed(2);
+                console.log('calculatedRate', calculatedRate);
+                setRate(calculatedRate);
+                setIsIncrease(false);
+            } else {
+                const calculatedRate = (
+                    ((parseFloat(info.price.replace(',', '.')) -
+                        parseFloat(info.lastPrice.replace(',', '.'))) /
+                        parseFloat(info.lastPrice.replace(',', '.'))) *
+                    100
+                ).toFixed(2);
+
+                console.log('calculatedRate', calculatedRate);
+                setRate(calculatedRate + '%');
+                setIsIncrease(true);
+            }
+        }
+    }, [data]);
 
     console.log(rate);
 
     return (
-        name && (
+        data[0] && (
             <View style={styles.container}>
-                <Text style={styles.small}>{small}</Text>
+                <Text style={styles.small}>{data[0].small}</Text>
                 <Text style={styles.nameText}>
-                    {name.length > 32 ? `${name.slice(0, 32)}...` : name}
+                    {data[0].name.length > 32
+                        ? `${data[0].name.slice(0, 32)}...`
+                        : data[0].name}
                 </Text>
-                <Text style={styles.price}>{price + '₺'}</Text>
+                <Text style={styles.price}>{data[0].price + '₺'}</Text>
                 <View style={styles.bottomOfContainer}>
                     <Icon
                         name={isIncrease ? 'arrowup' : 'arrowdown'}

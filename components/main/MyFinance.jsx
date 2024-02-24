@@ -73,7 +73,7 @@ const MyFinance = () => {
             }
             setIsLoading(false);
         } catch (error) {
-            console.error('Fetch Hatası:', error);
+            console.error('Fetch Hatasiiii:', error);
             setIsLoading(false);
         }
     };
@@ -107,11 +107,7 @@ const MyFinance = () => {
                 {list.map((item, index) => (
                     <FinanceContainer
                         key={index + 'financeContainer'}
-                        name={item.name}
                         small={item.small}
-                        price={item.price}
-                        lastPrice={item.lastPrice}
-                        amount={20}
                     />
                 ))}
             </ScrollView>
