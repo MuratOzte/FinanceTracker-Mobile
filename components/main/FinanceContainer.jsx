@@ -69,7 +69,7 @@ const FinanceContainer = ({ small }) => {
                         parseFloat(info.lastPrice.replace(',', '.'))) *
                     100
                 ).toFixed(2);
-                setRate(calculatedRate);
+                setRate(calculatedRate + '%');
                 setIsIncrease(false);
             } else {
                 const calculatedRate = (
@@ -84,7 +84,6 @@ const FinanceContainer = ({ small }) => {
             }
         }
     }, [data]);
-
 
     return (
         data[0] && (

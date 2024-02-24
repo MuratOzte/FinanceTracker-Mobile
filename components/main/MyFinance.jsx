@@ -1,6 +1,6 @@
 import cheerio from 'cheerio';
 import { StatusBar } from 'expo-status-bar';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import {
     Button,
     ScrollView,
@@ -43,7 +43,7 @@ const MyFinance = () => {
     }, []);
 
     useEffect(() => {
-        if (list.length > 0) storeData();
+        if (list && list.length > 0) storeData();
     }, [list]);
 
     const fetchStockData = async () => {
@@ -107,14 +107,17 @@ const MyFinance = () => {
                 <Button title="çek" onPress={getData} />
             </View>
             {isLoading && <Text>Loading...</Text>}
-            <ScrollView style={{ width: '100%' }}>
-                {list.map((item, index) => (
-                    <FinanceContainer
-                        key={index + 'financeContainer'}
-                        small={item.small}
-                    />
-                ))}
-            </ScrollView>
+            <Suspense fallback={<Text>Loading...</Text>}>
+                <ScrollView style={{ width: '100%' }}>
+                    {list &&
+                        list.map((item, index) => (
+                            <FinanceContainer
+                                key={index + 'financeContainer'}
+                                small={item.small}
+                            />
+                        ))}
+                </ScrollView>
+            </Suspense>
             <StatusBar style="auto" />
         </>
     );
