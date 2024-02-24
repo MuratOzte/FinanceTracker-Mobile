@@ -43,7 +43,6 @@ const FinanceContainer = ({ small }) => {
                         parseFloat(info.lastPrice.replace(',', '.'))) *
                     100
                 ).toFixed(2);
-                console.log('calculatedRate', calculatedRate);
                 setRate(calculatedRate);
                 setIsIncrease(false);
             } else {
@@ -54,7 +53,6 @@ const FinanceContainer = ({ small }) => {
                     100
                 ).toFixed(2);
 
-                console.log('calculatedRate', calculatedRate);
                 setRate(calculatedRate + '%');
                 setIsIncrease(true);
             }
@@ -71,7 +69,6 @@ const FinanceContainer = ({ small }) => {
                         parseFloat(info.lastPrice.replace(',', '.'))) *
                     100
                 ).toFixed(2);
-                console.log('calculatedRate', calculatedRate);
                 setRate(calculatedRate);
                 setIsIncrease(false);
             } else {
@@ -82,14 +79,12 @@ const FinanceContainer = ({ small }) => {
                     100
                 ).toFixed(2);
 
-                console.log('calculatedRate', calculatedRate);
                 setRate(calculatedRate + '%');
                 setIsIncrease(true);
             }
         }
     }, [data]);
 
-    console.log(rate);
 
     return (
         data[0] && (

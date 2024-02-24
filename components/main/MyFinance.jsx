@@ -33,7 +33,7 @@ const MyFinance = () => {
         const getData = async () => {
             try {
                 const jsonValue = await AsyncStorage.getItem('financeList');
-                console.log('cache', jsonValue);
+                console.log('cache', JSON.parse(jsonValue));
                 setList(jsonValue != null ? JSON.parse(jsonValue) : null);
             } catch (e) {
                 console.error('Error reading value:', e);
@@ -43,8 +43,8 @@ const MyFinance = () => {
     }, []);
 
     useEffect(() => {
-        if(list.length > 0) storeData();
-    }, [list]); 
+        if (list.length > 0) storeData();
+    }, [list]);
 
     const fetchStockData = async () => {
         try {
@@ -56,21 +56,25 @@ const MyFinance = () => {
             const price = $('.YMlKec.fxKbKc').text().replace('₺', '');
             const small = $('.BRnNhc').text().split(' ')[1].split('Sayfa')[1];
             const lastPrice = $('.P6K39c').text().split('₺')[1];
-            if (
-                !list.some(
-                    (item) =>
-                        item.name === name &&
-                        item.price === price &&
-                        item.small === small &&
-                        item.lastPrice === lastPrice
-                )
-            ) {
+            const existingIndex = list.findIndex(
+                (item) =>
+                    item.name === name &&
+                    item.price === price &&
+                    item.small === small &&
+                    item.lastPrice === lastPrice
+            );
+
+            if (existingIndex !== -1) {
+                const updatedList = [...list];
+                updatedList[existingIndex] = { name, price, small, lastPrice };
+                setList(updatedList);
+            } else {
                 setList((prevList) => [
                     ...prevList,
                     { name, price, small, lastPrice },
                 ]);
-                storeData();
             }
+            storeData();
             setIsLoading(false);
         } catch (error) {
             console.error('Fetch Hatasiiii:', error);
